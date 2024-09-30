@@ -1,0 +1,7 @@
+blacklisted-words:
+  - "badword1"
+  - "badword2"
+
+punishment-command: "ban {player} You were banned for using inappropriate language!"
+
+punished: []

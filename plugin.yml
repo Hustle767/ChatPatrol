@@ -1,0 +1,16 @@
+name: ChatPatrol
+main: com.jamplifier.ChatPatrol
+version: 1.0
+api-version: 1.16
+description: A plugin to monitor and control chat using blacklisted words.
+
+commands:
+  chatpatrol:
+    aliases: [cp]
+    description: Main command for ChatPatrol.
+    usage: "/<command> [list|reload]"
+
+permissions:
+  chatpatrol.admin:
+    description: Allows access to admin commands for ChatPatrol.
+    default: op
