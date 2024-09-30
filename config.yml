@@ -2,6 +2,7 @@ blacklisted-words:
   - "badword1"
   - "badword2"
 
+# Use {player} variable to grab the user when changing command or message
 punishment-command: "ban {player} You were banned for using inappropriate language!"
 
 punished: []

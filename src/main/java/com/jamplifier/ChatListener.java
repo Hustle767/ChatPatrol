@@ -28,17 +28,26 @@ public class ChatListener implements Listener {
             if (message.contains(word)) {
                 event.setCancelled(true); // Prevent message from being sent
 
-                // Log the player's UUID to the punished list in config
+                // Log the player's UUID to the punished list in config, but avoid duplicates
                 List<String> punished = plugin.getConfig().getStringList("punished");
-                punished.add(player.getUniqueId().toString());
-                plugin.getConfig().set("punished", punished); // Save the updated punished list
-                plugin.saveConfig();
+                if (!punished.contains(player.getUniqueId().toString())) {
+                    punished.add(player.getUniqueId().toString());
+                    plugin.getConfig().set("punished", punished); // Save the updated punished list
+                    plugin.saveConfig();
+                }
 
-                // Schedule the ban command to run on the main thread
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ban " + player.getName() + " You were banned for using inappropriate language!");
-                });
+                // Fetch the punishment command from the config
+                String punishmentCommand = plugin.getConfig().getString("punishment-command");
+                
+                if (punishmentCommand != null && !punishmentCommand.isEmpty()) {
+                    // Replace {player} with the player's name in the command
+                    String finalCommand = punishmentCommand.replace("{player}", player.getName());
 
+                    // Schedule the command to run on the main thread
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), finalCommand);
+                    });
+                }
                 return;
             }
         }
