@@ -2,7 +2,11 @@ blacklisted-words:
   - "badword1"
   - "badword2"
 
-# Use {player} variable to grab the user when changing command or message
-punishment-command: "ban {player} You were banned for using inappropriate language!"
+punishments:
+  blacklisted-words-command: "ban {player} You were banned for using inappropriate language!"
+  spam-command: "kick {player} You were kicked for spamming!"
 
-punished: []
+punished: [] # List of players punished (auto-updated)
+spam-threshold: 3 # Number of messages allowed in a short time period
+spam-time-window: 10 # Time window (seconds) to check for spam
+enable-spam-filter: true
