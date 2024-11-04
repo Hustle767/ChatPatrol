@@ -53,7 +53,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>com.jamplifier.KudosPlugin</Main-Class>
+                            <Main-Class>com.jamplifier.ChatPatrol</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>
