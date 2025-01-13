@@ -8,7 +8,7 @@ commands:
   chatpatrol:
     aliases: [cp]
     description: Main command for ChatPatrol.
-    usage: "/<command> [list|reload]"
+    usage: "/<command> reload"
 
 permissions:
   chatpatrol.admin:

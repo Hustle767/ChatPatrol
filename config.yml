@@ -11,6 +11,11 @@ enable-spam-filter: true
 spam-threshold: 3 # Number of messages allowed in a short time period
 spam-time-window: 10 # Time window (seconds) to check for spam
 
+# CAPS LOCK FILTER
+enable-caps-filter: true
+caps-threshold: 3 # Maximum allowed uppercase letters in a message
+caps-notification: true
+
 # COMMAND TO EXECUTE FOR PUNISHMENTS
 punishments:
   blacklisted-words-command: "ban {player} You were banned for using inappropriate language!"

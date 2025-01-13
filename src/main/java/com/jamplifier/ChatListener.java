@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import net.md_5.bungee.api.ChatColor;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -27,21 +29,26 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        String message = event.getMessage().toLowerCase();
-        UUID playerUUID = player.getUniqueId();
+        String originalMessage = event.getMessage(); // Keep the original message
+        String message = originalMessage.toLowerCase(); // Lowercase version for word filter
 
         // Check for blacklisted words
         if (plugin.getConfig().getBoolean("enable-word-filter")) {
-        	checkForBlacklistedWords(event, player, message);
+            checkForBlacklistedWords(event, player, message);
         }
-    
 
-        // Check for spam (if enabled in config)
+        // Check for spam
         if (plugin.getConfig().getBoolean("enable-spam-filter")) {
-            checkForSpam(event, player, playerUUID);
+            checkForSpam(event, player, player.getUniqueId());
+        }
+
+        // Check for caps filter
+        if (plugin.getConfig().getBoolean("enable-caps-filter")) {
+            checkForExcessiveCaps(event, player, originalMessage);
         }
     }
 
+    
     private void checkForBlacklistedWords(AsyncPlayerChatEvent event, Player player, String message) {
         // Get blacklisted words from the config
         List<String> blacklistedWords = plugin.getConfig().getStringList("blacklisted-words");
@@ -101,6 +108,25 @@ public class ChatListener implements Listener {
             messageCount.put(playerUUID, 0); // Reset the spam count after punishment
         }
     }
+    private void checkForExcessiveCaps(AsyncPlayerChatEvent event, Player player, String message) {
+        int maxCapsAllowed = plugin.getConfig().getInt("caps-threshold"); // Get the caps threshold from the config
+        long capsCount = message.chars().filter(Character::isUpperCase).count(); // Count uppercase letters in the message
+
+        // Check if the caps count exceeds the threshold
+        if (capsCount > maxCapsAllowed) {
+            String modifiedMessage = message.toLowerCase(); // Convert the message to lowercase
+            event.setMessage(modifiedMessage); // Update the event's message with the modified version
+
+            // Check if notifications are enabled
+            if (plugin.getConfig().getBoolean("caps-notification", true)) {
+                // Notify the player about the modification with a default message
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    player.sendMessage(ChatColor.YELLOW + "Your message contained too many capital letters and was modified to lowercase.");
+                });
+            }
+        }
+    }
+
     private void logPunishment(Player player, String reason, String message) {
         File punishmentsFile = new File(plugin.getDataFolder(), "punishments.txt");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(punishmentsFile, true))) {
