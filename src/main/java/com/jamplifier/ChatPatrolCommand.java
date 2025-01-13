@@ -36,33 +36,6 @@ public class ChatPatrolCommand implements CommandExecutor {
             return true;
         }
 
-        // Handle "/cp list" command
-        if (args[0].equalsIgnoreCase("list")) {
-            if (!sender.hasPermission("chatpatrol.admin")) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
-                return true;
-            }
-
-            List<String> punished = plugin.getConfig().getStringList("punished");
-            if (punished.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "No players have been punished yet.");
-                return true;
-            }
-
-            sender.sendMessage(ChatColor.GOLD + "Last 10 punished players:");
-            for (int i = 0; i < Math.min(punished.size(), 10); i++) {
-                UUID uuid = UUID.fromString(punished.get(i));
-                String playerName = Bukkit.getOfflinePlayer(uuid).getName(); // Handle offline players
-
-                if (playerName != null) {
-                    sender.sendMessage(ChatColor.GOLD + String.valueOf(i + 1) + ". " + playerName);
-                } else {
-                    sender.sendMessage(ChatColor.GOLD + String.valueOf(i + 1) + ". Unknown Player (UUID: " + uuid + ")");
-                }
-            }
-            return true;
-        }
-
         return false;
     }
 }

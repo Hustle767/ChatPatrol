@@ -1,12 +1,17 @@
+# CHAT PATROL CONFIGURATION | BY JAMPLIFIER
+
+# WORD FILTER
+enable-word-filter: true
 blacklisted-words:
   - "badword1"
   - "badword2"
 
+# SPAM FILTER
+enable-spam-filter: true
+spam-threshold: 3 # Number of messages allowed in a short time period
+spam-time-window: 10 # Time window (seconds) to check for spam
+
+# COMMAND TO EXECUTE FOR PUNISHMENTS
 punishments:
   blacklisted-words-command: "ban {player} You were banned for using inappropriate language!"
   spam-command: "kick {player} You were kicked for spamming!"
-
-punished: [] # List of players punished (auto-updated)
-spam-threshold: 3 # Number of messages allowed in a short time period
-spam-time-window: 10 # Time window (seconds) to check for spam
-enable-spam-filter: true

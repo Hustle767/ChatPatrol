@@ -6,6 +6,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +31,10 @@ public class ChatListener implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         // Check for blacklisted words
-        checkForBlacklistedWords(event, player, message);
+        if (plugin.getConfig().getBoolean("enable-word-filter")) {
+        	checkForBlacklistedWords(event, player, message);
+        }
+    
 
         // Check for spam (if enabled in config)
         if (plugin.getConfig().getBoolean("enable-spam-filter")) {
@@ -43,13 +50,8 @@ public class ChatListener implements Listener {
             if (message.contains(word)) {
                 event.setCancelled(true); // Cancel message
 
-                // Add player's UUID to punished list, avoid duplicates
-                List<String> punished = plugin.getConfig().getStringList("punished");
-                if (!punished.contains(player.getUniqueId().toString())) {
-                    punished.add(player.getUniqueId().toString());
-                    plugin.getConfig().set("punished", punished); // Update punished list in config
-                    plugin.saveConfig(); // Save config
-                }
+                // Log punishment to file
+                logPunishment(player, "Blacklisted Word", message);
 
                 // Fetch and execute the blacklisted word punishment command
                 String punishmentCommand = plugin.getConfig().getString("punishments.blacklisted-words-command");
@@ -63,7 +65,7 @@ public class ChatListener implements Listener {
             }
         }
     }
-
+  
     private void checkForSpam(AsyncPlayerChatEvent event, Player player, UUID playerUUID) {
         long currentTime = System.currentTimeMillis();
         int spamThreshold = plugin.getConfig().getInt("spam-threshold");
@@ -84,6 +86,9 @@ public class ChatListener implements Listener {
         if (messageCount.get(playerUUID) > spamThreshold) {
             event.setCancelled(true); // Cancel the spam message
 
+            // Log punishment to file
+            logPunishment(player, "Spam", event.getMessage());
+
             // Fetch and execute the spam punishment command
             String spamCommand = plugin.getConfig().getString("punishments.spam-command");
             if (spamCommand != null && !spamCommand.isEmpty()) {
@@ -96,5 +101,15 @@ public class ChatListener implements Listener {
             messageCount.put(playerUUID, 0); // Reset the spam count after punishment
         }
     }
+    private void logPunishment(Player player, String reason, String message) {
+        File punishmentsFile = new File(plugin.getDataFolder(), "punishments.txt");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(punishmentsFile, true))) {
+            writer.write("Player: " + player.getName() + " | Reason: " + reason + " | Message: " + message);
+            writer.newLine();
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to write to punishments.txt: " + e.getMessage());
+        }
+    }
+
 }
 
