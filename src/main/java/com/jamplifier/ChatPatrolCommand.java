@@ -25,12 +25,15 @@ public class ChatPatrolCommand implements CommandExecutor {
             // Check the configuration for active features
             boolean wordFilterEnabled = plugin.getConfig().getBoolean("enable-word-filter");
             boolean spamFilterEnabled = plugin.getConfig().getBoolean("enable-spam-filter");
+            boolean capsFilterEnabled = plugin.getConfig().getBoolean("enable-caps-filter");
 
             // Display the status of each feature
             sender.sendMessage(ChatColor.GOLD + "Word Filter: " 
                     + (wordFilterEnabled ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
             sender.sendMessage(ChatColor.GOLD + "Spam Filter: " 
                     + (spamFilterEnabled ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
+            sender.sendMessage(ChatColor.GOLD + "Caps Filter: " 
+                    + (capsFilterEnabled ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"));
 
             return true;
         }

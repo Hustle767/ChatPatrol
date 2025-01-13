@@ -13,12 +13,12 @@ public class ChatPatrol extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         this.getCommand("chatpatrol").setExecutor(new ChatPatrolCommand(this));
 
-        getLogger().info("ChatPatrol Plugin Enabled!");
+        getLogger().info("ChatPatrol 1.3 Plugin Enabled!");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("ChatPatrol Plugin Disabled!");
+        getLogger().info("ChatPatrol 1.3 Plugin Disabled!");
     }
 
     // Method to reload config
